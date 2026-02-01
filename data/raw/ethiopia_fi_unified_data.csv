@@ -1,0 +1,58 @@
+record_id,record_type,category,pillar,indicator,indicator_code,indicator_direction,value_numeric,unit,observation_date,source_name,confidence,notes,source_url,gender,location,parent_id,impact_direction,impact_magnitude,impact_estimate,lag_months,evidence_basis
+REC_0001,observation,,ACCESS,Account Ownership Rate,ACC_OWNERSHIP,higher_better,22.0,%,2014,Global Findex,,,,,,,,,,,
+REC_0002,observation,,ACCESS,Account Ownership Rate,ACC_OWNERSHIP,higher_better,35.0,%,2017,Global Findex,,,,,,,,,,,
+REC_0003,observation,,ACCESS,Account Ownership Rate,ACC_OWNERSHIP,higher_better,46.0,%,2021,Global Findex,,,,,,,,,,,
+REC_0004,observation,,ACCESS,Account Ownership Rate,ACC_OWNERSHIP,higher_better,56.0,%,2021,Global Findex,,,,,,,,,,,
+REC_0005,observation,,ACCESS,Account Ownership Rate,ACC_OWNERSHIP,higher_better,36.0,%,2021,Global Findex,,,,,,,,,,,
+REC_0006,observation,,ACCESS,Account Ownership Rate,ACC_OWNERSHIP,higher_better,49.0,%,2024,Global Findex,,,,,,,,,,,
+REC_0007,observation,,ACCESS,Mobile Money Account Rate,ACC_MM_ACCOUNT,higher_better,4.7,%,2021,Global Findex,,,,,,,,,,,
+REC_0008,observation,,ACCESS,Mobile Money Account Rate,ACC_MM_ACCOUNT,higher_better,9.45,%,2024,Global Findex,,,,,,,,,,,
+REC_0009,observation,,ACCESS,4G Population Coverage,ACC_4G_COV,higher_better,37.5,%,2021,Ethio Telecom,,,,,,,,,,,
+REC_0010,observation,,ACCESS,4G Population Coverage,ACC_4G_COV,higher_better,70.8,%,2024,Ethio Telecom,,,,,,,,,,,
+REC_0011,observation,,ACCESS,Mobile Subscription Penetration,ACC_MOBILE_PEN,higher_better,61.4,%,2024,DataReportal,,,,,,,,,,,
+REC_0012,observation,,ACCESS,Fayda Digital ID Enrollment,ACC_FAYDA,higher_better,8000000.0,people,2023,Fayda Official,,,,,,,,,,,
+REC_0013,observation,,ACCESS,Fayda Digital ID Enrollment,ACC_FAYDA,higher_better,12000000.0,people,2025,Fayda Official,,,,,,,,,,,
+REC_0014,observation,,ACCESS,Fayda Digital ID Enrollment,ACC_FAYDA,higher_better,15000000.0,people,2025,Fayda Official,,,,,,,,,,,
+REC_0015,observation,,USAGE,P2P Transaction Count,USG_P2P_COUNT,higher_better,49700000.0,transactions,2024,EthSwitch,,,,,,,,,,,
+REC_0016,observation,,USAGE,P2P Transaction Count,USG_P2P_COUNT,higher_better,128300000.0,transactions,2025,EthSwitch,,,,,,,,,,,
+REC_0017,observation,,USAGE,P2P Transaction Value,USG_P2P_VALUE,higher_better,577700000000.0,ETB,2025,EthSwitch,,,,,,,,,,,
+REC_0018,observation,,USAGE,ATM Transaction Count,USG_ATM_COUNT,neutral,119300000.0,transactions,2025,EthSwitch,,,,,,,,,,,
+REC_0019,observation,,USAGE,ATM Transaction Value,USG_ATM_VALUE,neutral,156100000000.0,ETB,2025,EthSwitch,,,,,,,,,,,
+REC_0020,observation,,USAGE,P2P/ATM Crossover Ratio,USG_CROSSOVER,higher_better,1.08,ratio,2025,EthSwitch,,,,,,,,,,,
+REC_0021,observation,,USAGE,Telebirr Registered Users,USG_TELEBIRR_USERS,higher_better,54840000.0,users,2025,Calculated,,,,,,,,,,,
+REC_0022,observation,,USAGE,Telebirr Transaction Value,USG_TELEBIRR_VALUE,higher_better,2380000000000.0,ETB,2025,Ethio Telecom,,,,,,,,,,,
+REC_0023,observation,,USAGE,M-Pesa Registered Users,USG_MPESA_USERS,higher_better,10800000.0,users,2025,Ethio Telecom,,,,,,,,,,,
+REC_0024,observation,,USAGE,M-Pesa 90-Day Active Users,USG_MPESA_ACTIVE,higher_better,7100000.0,users,2025,Safaricom,,,,,,,,,,,
+REC_0025,observation,,USAGE,Mobile Money Activity Rate,USG_ACTIVE_RATE,higher_better,66.0,%,2025,Safaricom,,,,,,,,,,,
+REC_0026,observation,,AFFORDABILITY,Data Affordability Index,AFF_DATA_INCOME,lower_better,2.0,% of GNI,2024,Calculated,,,,,,,,,,,
+REC_0027,observation,,GENDER,Account Ownership Gender Gap,GEN_GAP_ACC,lower_better,20.0,pp,2024,A4AI/ITU,,,,,,,,,,,
+REC_0028,observation,,GENDER,Account Ownership Gender Gap,GEN_GAP_ACC,lower_better,18.0,pp,2024,Global Findex,,,,,,,,,,,
+REC_0029,observation,,GENDER,Female Mobile Money Account Share,GEN_MM_SHARE,higher_better,14.0,%,2024,Global Findex,,,,,,,,,,,
+REC_0030,observation,,GENDER,Mobile Phone Gender Gap,GEN_GAP_MOBILE,lower_better,24.0,%,2024,NBE/Shega,,,,,,,,,,,
+REC_0031,target,,ACCESS,Account Ownership Rate,ACC_OWNERSHIP,higher_better,70.0,%,2021,GSMA,,,,,,,,,,,
+REC_0032,target,,ACCESS,Fayda Digital ID Enrollment,ACC_FAYDA,higher_better,90000000.0,people,2024,NFIS-II,,,,,,,,,,,
+REC_0033,target,,GENDER,Female Mobile Money Account Share,GEN_MM_SHARE,higher_better,50.0,%,2024,Fayda/NIDP,,,,,,,,,,,
+EVT_0001,event,product_launch,,Telebirr Launch,EVT_TELEBIRR,Launched,1.0,categorical,2021-05-17,NBE,,,,,,,,,,,
+EVT_0002,event,market_entry,,Safaricom Ethiopia Launch,EVT_SAFARICOM,Launched,1.0,categorical,2022-08-01,Ethio Telecom,,,,,,,,,,,
+EVT_0003,event,product_launch,,M-Pesa Ethiopia Launch,EVT_MPESA,Launched,1.0,categorical,2023-08-01,News,,,,,,,,,,,
+EVT_0004,event,infrastructure,,Fayda Digital ID Rollout,EVT_FAYDA,Launched,1.0,categorical,2024-01-01,Safaricom,,,,,,,,,,,
+EVT_0005,event,policy,,Foreign Exchange Liberalization,EVT_FX_REFORM,Implemented,1.0,categorical,2024-07-29,NIDP,,,,,,,,,,,
+EVT_0006,event,milestone,,P2P Transactions > ATM,EVT_CROSSOVER,Achieved,1.0,categorical,2024-10-01,NBE,,,,,,,,,,,
+EVT_0007,event,partnership,,M-Pesa EthSwitch Integration,EVT_MPESA_INTEROP,Launched,1.0,categorical,2025-10-27,EthSwitch,,,,,,,,,,,
+EVT_0008,event,infrastructure,,EthioPay IPS Launch,EVT_ETHIOPAY,Launched,1.0,categorical,2025-12-18,EthSwitch,,,,,,,,,,,
+EVT_0009,event,policy,,NFIS-II Strategy Launch,EVT_NFIS2,Launched,1.0,categorical,2021-09-01,NBE/EthSwitch,,,,,,,,,,,
+EVT_0010,event,pricing,,Safaricom Price Increase,EVT_SAFCOM_PRICE,Implemented,1.0,categorical,2025-12-15,NBE,,,,,,,,,,,
+IMP_0001,impact_link,,ACCESS,,ACC_OWNERSHIP,,,,,,,,,,,EVT_0001,increase,high,15.0,12.0,literature
+IMP_0002,impact_link,,USAGE,,USG_TELEBIRR_USERS,,,,,,,,,,,EVT_0001,increase,high,0.0,3.0,empirical
+IMP_0003,impact_link,,USAGE,,USG_P2P_COUNT,,,,,,,,,,,EVT_0001,increase,high,25.0,6.0,empirical
+IMP_0004,impact_link,,ACCESS,,ACC_4G_COV,,,,,,,,,,,EVT_0002,increase,medium,15.0,12.0,empirical
+IMP_0005,impact_link,,AFFORDABILITY,,AFF_DATA_INCOME,,,,,,,,,,,EVT_0002,decrease,medium,-20.0,12.0,literature
+IMP_0006,impact_link,,USAGE,,USG_MPESA_USERS,,,,,,,,,,,EVT_0003,increase,high,0.0,3.0,empirical
+IMP_0007,impact_link,,ACCESS,,ACC_MM_ACCOUNT,,,,,,,,,,,EVT_0003,increase,medium,5.0,6.0,theoretical
+IMP_0008,impact_link,,ACCESS,,ACC_OWNERSHIP,,,,,,,,,,,EVT_0004,increase,medium,10.0,24.0,literature
+IMP_0009,impact_link,,GENDER,,GEN_GAP_ACC,,,,,,,,,,,EVT_0004,decrease,medium,-5.0,24.0,literature
+IMP_0010,impact_link,,AFFORDABILITY,,AFF_DATA_INCOME,,,,,,,,,,,EVT_0005,increase,high,30.0,3.0,empirical
+IMP_0011,impact_link,,USAGE,,USG_MPESA_ACTIVE,,,,,,,,,,,EVT_0007,increase,medium,15.0,3.0,literature
+IMP_0012,impact_link,,USAGE,,USG_P2P_COUNT,,,,,,,,,,,EVT_0007,increase,medium,10.0,3.0,literature
+IMP_0013,impact_link,,USAGE,,USG_P2P_COUNT,,,,,,,,,,,EVT_0008,increase,medium,15.0,6.0,literature
+IMP_0014,impact_link,,AFFORDABILITY,,AFF_DATA_INCOME,,,,,,,,,,,EVT_0010,increase,low,10.0,1.0,empirical

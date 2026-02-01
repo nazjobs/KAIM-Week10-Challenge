@@ -1,0 +1,10 @@
+field,code,description
+record_type,observation,Actual measured value
+record_type,event,Policy/launch/milestone
+record_type,impact_link,Relationship event->indicator
+pillar,ACCESS,Can people reach services?
+pillar,USAGE,Are people actively using?
+pillar,GENDER,Gender gaps
+pillar,AFFORDABILITY,Cost relative to income
+indicator_direction,higher_better,Higher values are better
+indicator_direction,lower_better,Lower values are better
