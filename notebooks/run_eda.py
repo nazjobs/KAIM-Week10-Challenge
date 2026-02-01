@@ -1,12 +1,12 @@
 import sys
 import os
 
-# Add parent directory to path so we can import src
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.dates as mdates
 from src.data import load_data, get_observations, get_enriched_data, get_events
 
 # Setup
@@ -14,15 +14,112 @@ os.makedirs("reports/figures", exist_ok=True)
 sns.set_theme(style="whitegrid")
 
 
+def plot_data_quality_summary(df):
+    """Task 1: Explicit Data Quality & Coverage Analysis"""
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+    # 1. Count by Record Type
+    sns.countplot(data=df, x="record_type", ax=axes[0], palette="viridis")
+    axes[0].set_title("Dataset Composition by Record Type")
+    axes[0].set_ylabel("Count")
+
+    # 2. Count by Confidence Level
+    sns.countplot(
+        data=df,
+        x="confidence",
+        ax=axes[1],
+        palette="magma",
+        order=["high", "medium", "low", "estimated"],
+    )
+    axes[1].set_title("Data Confidence Levels")
+
+    plt.tight_layout()
+    plt.savefig("reports/figures/data_quality_summary.png")
+    print("Generated reports/figures/data_quality_summary.png")
+
+
+def plot_event_timeline_dedicated(df):
+    """Task 2: Dedicated Event Timeline Visualization"""
+    events = get_events(df).copy()
+    events = events.dropna(subset=["observation_date"])
+    events = events.sort_values("observation_date")
+
+    plt.figure(figsize=(12, 6))
+
+    # Create a timeline where Y-axis is the category
+    sns.scatterplot(
+        data=events,
+        x="observation_date",
+        y="category",
+        hue="category",
+        s=200,
+        marker="D",
+        palette="deep",
+        legend=False,
+    )
+
+    # Add vertical lines dropping to the x-axis
+    for _, row in events.iterrows():
+        plt.vlines(
+            x=row["observation_date"],
+            ymin=0,
+            ymax=row["category"],
+            color="grey",
+            linestyle=":",
+            alpha=0.5,
+        )
+        plt.text(
+            row["observation_date"],
+            row["category"],
+            f" {row['indicator']}",
+            verticalalignment="bottom",
+            fontsize=9,
+            rotation=20,
+        )
+
+    # Format X-axis
+    plt.gca().xaxis.set_major_locator(mdates.YearLocator())
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+
+    plt.title("Timeline of Financial Inclusion Events (2021-2025)")
+    plt.grid(True, axis="x", alpha=0.3)
+    plt.tight_layout()
+    plt.savefig("reports/figures/event_timeline.png")
+    print("Generated reports/figures/event_timeline.png")
+
+
+def plot_registered_vs_active(df):
+    """Task 2: Registered vs Active Users (M-Pesa Case Study)"""
+    # Filter specific records for M-Pesa
+    mpesa_reg = df[df["indicator_code"] == "USG_MPESA_USERS"]
+    mpesa_act = df[df["indicator_code"] == "USG_MPESA_ACTIVE"]
+
+    if mpesa_reg.empty or mpesa_act.empty:
+        return
+
+    data = pd.concat([mpesa_reg, mpesa_act])
+
+    plt.figure(figsize=(8, 6))
+    ax = sns.barplot(data=data, x="indicator", y="value_numeric", palette="Blues_d")
+
+    # Add values on top
+    for i in ax.containers:
+        ax.bar_label(i, fmt="%.0f", padding=3)
+
+    plt.title('The "Activity Gap": Registered vs Active Users (M-Pesa 2025)')
+    plt.ylabel("Users")
+    plt.xlabel("")
+    plt.xticks(rotation=15)
+    plt.tight_layout()
+    plt.savefig("reports/figures/registered_vs_active.png")
+    print("Generated reports/figures/registered_vs_active.png")
+
+
 def plot_access_trend(df):
-    """Task 2: Plot Account Ownership Trajectory"""
     obs = get_observations(df, "ACCESS")
-    # Filter for the specific indicator 'ACC_OWNERSHIP'
     acc_data = obs[obs["indicator_code"] == "ACC_OWNERSHIP"].sort_values(
         "observation_date"
     )
-
-    # Drop rows where observation_date is NaT
     acc_data = acc_data.dropna(subset=["observation_date"])
 
     plt.figure(figsize=(10, 6))
@@ -34,71 +131,20 @@ def plot_access_trend(df):
         linewidth=2.5,
     )
 
-    # Overlay events
-    events = get_events(df)
-    for _, event in events.iterrows():
-        # CRITICAL FIX: Skip events with no valid date
-        if pd.isna(event["observation_date"]):
-            continue
-
-        plt.axvline(x=event["observation_date"], color="red", linestyle="--", alpha=0.3)
-        # Offset text slightly to avoid overlapping
-        plt.text(
-            event["observation_date"],
-            20,
-            f"  {event['indicator']}",
-            rotation=90,
-            fontsize=8,
-            alpha=0.7,
-        )
-
-    plt.title("Ethiopia Account Ownership (2014-2024) with Key Events")
+    # Minimal event overlay (since we have a dedicated one now)
+    plt.title("Account Ownership Trajectory (2014-2024)")
     plt.ylabel("Ownership (%)")
+    plt.grid(True, alpha=0.3)
     plt.tight_layout()
     plt.savefig("reports/figures/access_trend.png")
     print("Generated reports/figures/access_trend.png")
-
-
-def plot_mobile_vs_bank(df):
-    """Task 2: Compare Traditional vs Mobile Money"""
-    obs = get_observations(df, "ACCESS")
-    mm_data = obs[obs["indicator_code"] == "ACC_MM_ACCOUNT"].copy()
-    mm_data["Type"] = "Mobile Money"
-
-    # Assuming ACC_OWNERSHIP is the total, we plot it for context
-    total_data = obs[obs["indicator_code"] == "ACC_OWNERSHIP"].copy()
-    total_data["Type"] = "Total Accounts"
-
-    combined = pd.concat([mm_data, total_data])
-    combined = combined.dropna(subset=["Year"])  # Ensure Year exists
-
-    plt.figure(figsize=(10, 6))
-    sns.barplot(
-        data=combined, x="Year", y="value_numeric", hue="Type", palette="viridis"
-    )
-    plt.title("Mobile Money vs Total Account Ownership")
-    plt.savefig("reports/figures/mobile_vs_total.png")
-    print("Generated reports/figures/mobile_vs_total.png")
-
-
-def plot_gender_gap(df):
-    """Task 2: Gender Gap Analysis"""
-    obs = get_observations(df, "GENDER")
-    gap_data = obs[obs["indicator_code"] == "GEN_GAP_ACC"]
-    gap_data = gap_data.dropna(subset=["Year"])
-
-    plt.figure(figsize=(8, 5))
-    sns.barplot(data=gap_data, x="Year", y="value_numeric", color="salmon")
-    plt.title("Gender Gap in Account Ownership (Percentage Points)")
-    plt.ylabel("Gap (Male % - Female %)")
-    plt.savefig("reports/figures/gender_gap.png")
-    print("Generated reports/figures/gender_gap.png")
 
 
 if __name__ == "__main__":
     df = load_data()
     df = get_enriched_data(df)
 
-    plot_access_trend(df)
-    plot_mobile_vs_bank(df)
-    plot_gender_gap(df)
+    plot_data_quality_summary(df)  # NEW
+    plot_event_timeline_dedicated(df)  # NEW
+    plot_registered_vs_active(df)  # NEW
+    plot_access_trend(df)  # UPDATED
