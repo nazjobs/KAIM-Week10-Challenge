@@ -3,7 +3,8 @@ numpy
 matplotlib
 seaborn
 scikit-learn
-jupyter
-openpyxl
-streamlit
 statsmodels
+streamlit
+plotly
+nbformat
+ipykernel
