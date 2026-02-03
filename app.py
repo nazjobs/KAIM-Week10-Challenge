@@ -1,127 +1,118 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
+import plotly.express as px
 
-# Page Config
-st.set_page_config(page_title="KAIM Event Analytics", layout="wide")
-
-# Title
-st.title("📊 Financial Event Impact & Forecasting Dashboard")
-st.markdown("Analysis of how holidays and events impact financial metrics.")
+st.set_page_config(layout="wide", page_title="Ethiopia Financial Inclusion Dashboard")
 
 
-# Load Data (Cached)
 @st.cache_data
 def load_data():
-    try:
-        df = pd.read_csv("data/processed/forecast_results.csv")
-        impacts = pd.read_csv("data/processed/forecast_results_impacts.csv")
-        return df, impacts
-    except FileNotFoundError:
-        return None, None
+    df = pd.read_csv("data/processed/inclusion_forecast.csv")
+    df["date"] = pd.to_datetime(df["date"])
+    impacts = pd.read_csv("data/processed/impact_matrix.csv")
+    return df, impacts
 
 
-df, impacts = load_data()
-
-if df is None:
-    st.error("Data not found. Please run 'python src/modeling.py' first!")
+try:
+    df, impacts = load_data()
+except:
+    st.error("Run src/modeling.py first")
     st.stop()
 
-# Ensure date format
-df["date"] = pd.to_datetime(df["date"])
+st.title("🇪🇹 Ethiopia Financial Inclusion Forecasting (Global Findex)")
+st.markdown(
+    "Forecasting **Access** and **Usage** metrics against national targets (National Bank of Ethiopia)."
+)
 
-# Sidebar Filters
-st.sidebar.header("Filters")
-min_date = df["date"].min().date()
-max_date = df["date"].max().date()
+# --- SIDEBAR SCENARIOS ---
+st.sidebar.header("Scenario Planning")
+growth_rate = st.sidebar.slider("Projected Digital Adoption Rate (%)", -10, 20, 0)
+target_val = st.sidebar.number_input(
+    "2026 Inclusion Target (txn volume)", value=float(df["value"].max() * 1.2)
+)
 
-date_range = st.sidebar.date_input("Select Date Range", [min_date, max_date])
-
-# Handle cases where user selects only one date
-if len(date_range) == 2:
-    start_date, end_date = date_range
-else:
-    start_date, end_date = min_date, max_date
-
-# Filter Data
-mask = (df["date"].dt.date >= start_date) & (df["date"].dt.date <= end_date)
-filtered_df = df.loc[mask]
+# Adjust forecast based on scenario
+df["Scenario_Forecast"] = df["Forecast"] * (1 + growth_rate / 100)
 
 # --- KPI ROW ---
 col1, col2, col3 = st.columns(3)
+curr_val = df["value"].iloc[-1]
+proj_val = df["Scenario_Forecast"].iloc[-1]
+gap = target_val - proj_val
 
-# Use 'target' column which represents the numeric value from your data
-total_val = filtered_df["target"].sum()
-avg_daily = filtered_df["target"].mean()
-predicted_avg = (
-    filtered_df["Forecast"].mean() if "Forecast" in filtered_df.columns else 0
-)
+col1.metric("Current Usage Metric", f"{curr_val:,.0f}")
+col2.metric("Scenario Projection", f"{proj_val:,.0f}", delta=f"{growth_rate}%")
+col3.metric("Gap to Target", f"{gap:,.0f}", delta_color="inverse")
 
-col1.metric("Total Metric Value", f"{total_val:,.2f}")
-col2.metric("Avg Daily Value (Actual)", f"{avg_daily:,.2f}")
-col3.metric("Avg Daily Value (Forecast)", f"{predicted_avg:,.2f}")
-
-st.divider()
-
-# --- TABS ---
-tab1, tab2, tab3 = st.tabs(["📈 Forecasting", "⚡ Event Impact", "📝 Recommendations"])
+# --- CHARTS ---
+tab1, tab2 = st.tabs(["📈 Inclusion Forecast", "🔥 Impact Heatmap"])
 
 with tab1:
-    st.subheader("Metric Forecast vs Actual")
-
+    st.subheader("Financial Usage Forecast with Confidence Intervals")
     fig = go.Figure()
-    # Actual Data
+
+    # Historical
     fig.add_trace(
         go.Scatter(
-            x=filtered_df["date"],
-            y=filtered_df["target"],
-            mode="lines+markers",
-            name="Actual",
-            line=dict(color="blue"),
+            x=df["date"], y=df["value"], name="Actual Usage", line=dict(color="blue")
         )
     )
 
-    # Forecast Data (if available)
-    if "Forecast" in filtered_df.columns:
-        fig.add_trace(
-            go.Scatter(
-                x=filtered_df["date"],
-                y=filtered_df["Forecast"],
-                mode="lines",
-                name="Predicted",
-                line=dict(color="orange", dash="dash"),
-            )
+    # Forecast
+    fig.add_trace(
+        go.Scatter(
+            x=df["date"],
+            y=df["Scenario_Forecast"],
+            name="Forecast",
+            line=dict(color="orange", dash="dash"),
         )
+    )
+
+    # Confidence Interval (Upper/Lower) - "Shaded Area"
+    fig.add_trace(
+        go.Scatter(
+            x=df["date"],
+            y=df["Upper_Bound"],
+            mode="lines",
+            line=dict(width=0),
+            showlegend=False,
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=df["date"],
+            y=df["Lower_Bound"],
+            mode="lines",
+            line=dict(width=0),
+            fill="tonexty",
+            fillcolor="rgba(255, 165, 0, 0.2)",
+            name="95% Confidence Interval",
+        )
+    )
+
+    # Target Line
+    fig.add_hline(
+        y=target_val,
+        line_dash="dot",
+        annotation_text="National Target",
+        annotation_position="top right",
+        line_color="green",
+    )
 
     st.plotly_chart(fig, use_container_width=True)
 
 with tab2:
-    st.subheader("How Events Impact Trends")
-    st.markdown(
-        "Positive values indicate an increase, negative values indicate a decrease."
+    st.subheader("Event-Indicator Impact Matrix")
+    # Heatmap of coefficients
+    fig_heat = px.density_heatmap(
+        impacts,
+        x="Feature",
+        y="Coefficient",
+        z="Coefficient",
+        color_continuous_scale="Viridis",
     )
-
-    if not impacts.empty:
-        fig_bar = px.bar(
-            impacts,
-            x="Feature",
-            y="Impact_Coefficient",
-            color="Impact_Coefficient",
-            color_continuous_scale="RdBu",
-        )
-        st.plotly_chart(fig_bar, use_container_width=True)
-        st.dataframe(impacts)
-    else:
-        st.info("No impact data available.")
-
-with tab3:
-    st.subheader("Strategic Recommendations")
-
-    st.markdown("""
-    Based on the analysis:
-    
-    1.  **Event Sensitivity:** If specific holidays show negative coefficients, plan maintenance or lower capacity during those times.
-    2.  **Trend Awareness:** The forecast model captures seasonality. Use the 'Predicted' line to anticipate resource requirements 7 days out.
-    3.  **Data Volume:** *Note: The current dataset is small. As more data is ingested, these trends will become statistically stronger.*
-    """)
+    st.plotly_chart(fig_heat)
+    st.markdown(
+        "**Insight:** Holidays negatively impact digital usage, suggesting reliance on physical branches."
+    )
